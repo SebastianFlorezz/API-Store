@@ -149,19 +149,3 @@ Permite probar todos los endpoints directamente desde el navegador. Usa el botó
 | `search`     | string  | Buscar por nombre             |
 | `minPrice`   | number  | Precio mínimo                 |
 | `maxPrice`   | number  | Precio máximo                 |
-
-## Modelo de datos
-
-```
-User ──1:N──> Review
-User ──1:N──> CartItem
-User ──1:N──> Order
-
-Category ──1:N──> Product
-
-Product ──1:N──> Review
-Product ──1:N──> CartItem
-Product ──1:N──> OrderItem
-
-Order ──1:N──> OrderItem
-```
