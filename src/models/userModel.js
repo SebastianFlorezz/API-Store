@@ -1,6 +1,5 @@
-const { Sequelize, DataTypes, Model} = require('sequelize/core');
-const { Attribute, PrimaryKey, AutoIncrement, NotNull, AllowNull} = require("@sequelize/core/decorators-legacy");
-
+const { DataTypes } = require("@sequelize/core");
+const { sequelize } = require("../db");
 
 const User = sequelize.define("User", {
     id: {
@@ -20,12 +19,16 @@ const User = sequelize.define("User", {
     password: {
         type: DataTypes.STRING(255),
         allowNull: false,
+    },
+    role: {
+        type: DataTypes.ENUM("customer", "admin"),
+        defaultValue: "customer",
+        allowNull: false,
     }
 }, {
     tableName: "users",
     timestamps: true,
     underscored: true,
-})
+});
 
 module.exports = User;
-

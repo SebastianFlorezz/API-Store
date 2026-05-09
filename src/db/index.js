@@ -1,8 +1,6 @@
 const { Sequelize } = require("@sequelize/core");
 require("dotenv").config();
 
-
-// setting up the database connection
 const sequelize = new Sequelize({
     dialect: "mysql",
     database: process.env.DATABASE,
@@ -10,9 +8,8 @@ const sequelize = new Sequelize({
     password: process.env.DB_PASSWORD,
     host: process.env.DB_HOST,
     port: 3306
-})
+});
 
-// testing the connection with the database
 async function testConnection() {
     try {
         await sequelize.authenticate();
@@ -25,4 +22,4 @@ async function testConnection() {
 module.exports = {
     sequelize,
     testConnection
-}   
+}

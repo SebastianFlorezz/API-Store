@@ -1,14 +1,35 @@
 const express = require("express");
-const app = express();
 require("dotenv").config();
-const { sequelize, testConnection } = require("./db");
+const { sequelize } = require("./models");
+const errorHandler = require("./middleware/errorHandler");
+
+const authRoutes = require("./routes/auth");
+const categoryRoutes = require("./routes/categories");
+const productRoutes = require("./routes/products");
+const cartRoutes = require("./routes/cart");
+const orderRoutes = require("./routes/orders");
+const reviewRoutes = require("./routes/reviews");
+
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", reviewRoutes);
 
-//database connection test
-testConnection();
+app.use(errorHandler);
+
+app.listen(PORT, async () => {
+    console.log(`Server is running on port ${PORT}`);
+    try {
+        await sequelize.sync({ alter: true });
+        console.log("Database synchronized successfully.");
+    } catch (error) {
+        console.error("Unable to sync database:", error);
+    }
+});
