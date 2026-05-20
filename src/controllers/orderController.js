@@ -17,14 +17,20 @@ exports.createOrder = async (req, res, next) => {
         let total = 0;
         const orderItemsData = [];
 
-        for (const item of cartItems) {
-            if (item.quantity > item.Product.stock) {
+for (const item of cartItems) {
+            const product = item.product || item.Product;
+            if (!product) {
                 return res.status(400).json({
-                    error: `Insufficient stock for "${item.Product.name}"`
+                    error: `Product no longer available (cart item ID: ${item.id})`
+                });
+            }
+            if (item.quantity > product.stock) {
+                return res.status(400).json({
+                    error: `Insufficient stock for "${product.name}"`
                 });
             }
 
-            const unitPrice = parseFloat(item.Product.price);
+            const unitPrice = parseFloat(product.price);
             total += unitPrice * item.quantity;
 
             orderItemsData.push({
@@ -54,7 +60,11 @@ exports.createOrder = async (req, res, next) => {
         await CartItem.destroy({ where: { userId: req.user.id } });
 
         const fullOrder = await Order.findByPk(order.id, {
-            include: [{ model: OrderItem, include: [{ model: Product, attributes: ["name", "price"] }] }]
+            include: [{ 
+                model: OrderItem, 
+                as: "OrderItems",
+                include: [{ model: Product, attributes: ["name", "price"] }] 
+            }]
         });
 
         res.status(201).json(fullOrder);
@@ -73,7 +83,11 @@ exports.getOrders = async (req, res, next) => {
 
         const orders = await Order.findAll({
             where,
-            include: [{ model: OrderItem, include: [{ model: Product, attributes: ["name", "imageUrl"] }] }],
+            include: [{ 
+                model: OrderItem, 
+                as: "OrderItems",
+                include: [{ model: Product, attributes: ["name", "imageUrl"] }] 
+            }],
             order: [["createdAt", "DESC"]]
         });
         res.json(orders);
@@ -92,7 +106,11 @@ exports.getOrder = async (req, res, next) => {
 
         const order = await Order.findOne({
             where,
-            include: [{ model: OrderItem, include: [{ model: Product, attributes: ["name", "imageUrl", "price"] }] }]
+            include: [{ 
+                model: OrderItem, 
+                as: "OrderItems",
+                include: [{ model: Product, attributes: ["name", "imageUrl", "price"] }] 
+            }]
         });
 
         if (!order) return res.status(404).json({ error: "Order not found" });

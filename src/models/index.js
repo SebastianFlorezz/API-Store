@@ -23,10 +23,10 @@ CartItem.belongsTo(Product, { foreignKey: "productId" });
 
 User.hasMany(Order, { foreignKey: "userId" });
 Order.belongsTo(User, { foreignKey: "userId" });
-Order.hasMany(OrderItem, { foreignKey: "orderId" });
+Order.hasMany(OrderItem, { foreignKey: "orderId", as: "OrderItems" });
 OrderItem.belongsTo(Order, { foreignKey: "orderId" });
 Product.hasMany(OrderItem, { foreignKey: "productId" });
-OrderItem.belongsTo(Product, { foreignKey: "productId" });
+OrderItem.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 module.exports = {
     sequelize,
