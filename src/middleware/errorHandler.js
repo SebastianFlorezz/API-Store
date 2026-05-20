@@ -15,9 +15,12 @@ const errorHandler = (err, req, res, next) => {
         });
     }
 
-    res.status(err.status || 500).json({
-        error: err.message || "Internal server error"
-    });
+    const status = err.status || 500;
+    const message = process.env.NODE_ENV === "production" 
+        ? (status === 500 ? "Internal server error" : err.message)
+        : err.message;
+
+    res.status(status).json({ error: message });
 };
 
 module.exports = errorHandler;
