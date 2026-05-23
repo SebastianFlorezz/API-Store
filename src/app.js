@@ -16,7 +16,7 @@ const orderRoutes = require("./routes/orders");
 const reviewRoutes = require("./routes/reviews");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 app.use(helmet());
 
@@ -29,15 +29,15 @@ app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
 const globalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
+    windowMs: 60 * 1000,
+    max: 200,
     message: { error: "Too many requests, please try again later" }
 });
 app.use(globalLimiter);
 
 const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 10,
+    windowMs: 60 * 1000,
+    max: 20,
     message: { error: "Too many authentication attempts, please try again later" }
 });
 
